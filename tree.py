@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 #Following this tutorial https://www.datacamp.com/tutorial/decision-tree-classification-python
 
 headings = ['Searching for Item(s','Times add to basket was clicked','Time spent on individual product page','How many times add to basket was clicked from individual product page','How many times go to basket was clicked','How long spent on the checkout','Purchase Completed?']
-data = pd.read_csv("Dataset.csv", header=1, names=headings)
+data = pd.read_csv("Dataset_Less_Time_on_Search_and_Checkout.csv", header=1, names=headings)
 features = ['Searching for Item(s','Times add to basket was clicked','Time spent on individual product page','How many times add to basket was clicked from individual product page','How many times go to basket was clicked','How long spent on the checkout']
 X = data[features]
 target = ['Purchase Completed?']
@@ -24,21 +24,44 @@ ypred = decisionTree.predict(X_test)
 importances = decisionTree.feature_importances_
 
 importance_match = {}
+
+#https://www.geeksforgeeks.org/donut-chart-using-matplotlib-in-python/
+
 for i in range(len(importances)):
     importance_match[features[i]] = importances[i]
 
-print(importance_match)
+#Pick important features
 
-fig = plt.figure(figsize=(10,10))
 
-plt.bar(features, importances, width=0.4)
-plt.xlabel("Survey Questions")
-plt.ylabel("Importance Values")
-plt.title("The Importances of Different Sections of Our Website")
-plt.xticks(rotation=45, ha="right")
-plt.tight_layout()
-plt.show()
+imp_sorted = sorted(importance_match, key=importance_match.get, reverse=True)[:4]
+
+values = []
+for i in range(len(imp_sorted)):
+    values.append(importance_match[imp_sorted[i]])
+
+#Train with top features
+decisionTree_best = DecisionTreeClassifier()
+Xbesttrain= X_train[imp_sorted]
+Xbesttest = X_test[imp_sorted]
+
+decisionTree_best = decisionTree_best.fit(Xbesttrain,y_train)
+ypred_best = decisionTree_best.predict(Xbesttest)
+
 print("Accuracy:",metrics.accuracy_score(y_test, ypred))
+print("Top 4 Accuracy",metrics.accuracy_score(y_test,ypred_best))
+fig = plt.figure(figsize=(5,5))
+
+plt.pie(importances, startangle=90,autopct='%1.1f%%',pctdistance=0.85,  textprops={'fontsize': 16})
+
+centre_circle = plt.Circle((0, 0), 0.70, fc='white')
+
+fig = plt.gcf()
+
+fig.gca().add_artist(centre_circle)
+plt.text(0, 0, 'Survey Questions Importance', horizontalalignment='center', verticalalignment='center', fontsize=18)
+plt.legend(features, loc="center left",bbox_to_anchor=[1, 0.5], fontsize=10)
+plt.show()
+
 
 
 
