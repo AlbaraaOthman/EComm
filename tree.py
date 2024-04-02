@@ -4,25 +4,19 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, f1_score, classification_report
 
 #Following this tutorial https://www.datacamp.com/tutorial/decision-tree-classification-python
 
-headings = ['Searching for Item(s','Times add to basket was clicked from search page','Time spent on individual product page','How many times add to basket was clicked from individual product page','How many times go to basket was clicked','How long spent on the checkout','Purchase Completed?']
+headings = ['Time spent on searching for item (s)','How many times add to basket was clicked (from search page)','Time spent on individual product page','How many times add to basket was clicked (from individual product page)','How many times go to basket was clicked','How long spent on checkout','Still buying?','Basket Value']
 data = pd.read_csv("Dataset_Less_Time_on_Search.csv", header=1, names=headings)
-test_data = pd.read_csv("Dataset_Less_Time_on_Search_and_Checkout.csv", header=1, names=headings)
-features = ['Searching for Item(s','Times add to basket was clicked from search page','Time spent on individual product page','How many times add to basket was clicked from individual product page','How many times go to basket was clicked','How long spent on the checkout']
+test_data = pd.read_csv("Dataset_Good_Website.csv", header=1, names=headings)
+features = ['Time spent on searching for item (s)','How many times add to basket was clicked (from search page)','Time spent on individual product page','How many times add to basket was clicked (from individual product page)','How many times go to basket was clicked','How long spent on checkout','Basket Value']
 X = data[features]
-target = 'Purchase Completed?'
+target = 'Still buying?'
 y = data[target]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) # 80% training and 20% test
-
-# X_train = data[features]
-# y_train = data[target]
-
-# X_test = test_data[features]
-# y_test = test_data[target]
 
 decisionTree = DecisionTreeClassifier()
 decisionTree = decisionTree.fit(X_train,y_train)
@@ -41,7 +35,7 @@ for i in range(len(importances)):
 #Pick important features
 
 
-take = round(len(importance_match) * .7)
+take = round(len(importance_match) * .5)
 imp_sorted = sorted(importance_match, key=importance_match.get, reverse=True)[:take]
 print(imp_sorted)
 values = []
@@ -55,11 +49,11 @@ Xbesttest = X_test[imp_sorted]
 
 decisionTree_best = decisionTree_best.fit(Xbesttrain,y_train)
 ypred_best = decisionTree_best.predict(Xbesttest)
-
-print("Accuracy:",metrics.accuracy_score(y_test, ypred))
+# print("Accuracy:",metrics.accuracy_score(y_test, ypred))
 print("Top 4 Accuracy",metrics.accuracy_score(y_test,ypred_best))
-confusion = confusion_matrix(y_test,ypred_best)
-print(confusion)
+print(classification_report(y_test,ypred_best))
+
+
 fig = plt.figure(figsize=(5,5))
 
 plt.pie(importances, startangle=90,autopct='%1.1f%%',pctdistance=0.85,  textprops={'fontsize': 16})
