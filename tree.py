@@ -9,14 +9,20 @@ from sklearn.metrics import confusion_matrix
 #Following this tutorial https://www.datacamp.com/tutorial/decision-tree-classification-python
 
 headings = ['Searching for Item(s','Times add to basket was clicked from search page','Time spent on individual product page','How many times add to basket was clicked from individual product page','How many times go to basket was clicked','How long spent on the checkout','Purchase Completed?']
-data = pd.read_csv("Dataset_Less_Time_on_Search.csv", header=1, names=headings)
+data = pd.read_csv("Baseline_Dataset.csv", header=1, names=headings)
+test_data = pd.read_csv("Dataset_Less_Time_on_Search_and_Checkout.csv", header=1, names=headings)
 features = ['Searching for Item(s','Times add to basket was clicked from search page','Time spent on individual product page','How many times add to basket was clicked from individual product page','How many times go to basket was clicked','How long spent on the checkout']
 X = data[features]
-target = ['Purchase Completed?']
-y = data[target]
+target = 'Purchase Completed?'
+# y = data[target]
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) # 80% training and 20% test
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) # 80% training and 20% test
 
+X_train = data[features]
+y_train = data[target]
+
+X_test = test_data[features]
+y_test = test_data[target]
 
 decisionTree = DecisionTreeClassifier()
 decisionTree = decisionTree.fit(X_train,y_train)
