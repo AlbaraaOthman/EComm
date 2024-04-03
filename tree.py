@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, f1_score, classification_report
-
+from sklearn.tree import plot_tree
 #Following this tutorial https://www.datacamp.com/tutorial/decision-tree-classification-python
 
 #List of headings of data
@@ -59,24 +59,28 @@ print("Top Accuracy",metrics.accuracy_score(y_test,ypred_best)) #Show Accuracy
 print(classification_report(y_test,ypred_best)) # Show classification report
 print(confusion_matrix(y_test,ypred_best)) # Show confusion matrix
 
-
-fig = plt.figure(figsize=(5,5)) #Donut graph of size 5 x 5
-
-
-#Create the pi chart
-plt.pie(importances, startangle=90,autopct='%1.1f%%',pctdistance=0.85,  textprops={'fontsize': 16})
-
-#Add a centre circle which is blank (to make it donut)
-centre_circle = plt.Circle((0, 0), 0.70, fc='white')
-
-
-fig = plt.gcf()
-
-#add the circle
-fig.gca().add_artist(centre_circle)
-plt.text(0, 0, 'Survey Questions Importance', horizontalalignment='center', verticalalignment='center', fontsize=18)
-plt.legend(features, loc="center left",bbox_to_anchor=[1, 0.5], fontsize=10) #position nicely
+plt.figure(figsize=(20,10))
+plot_tree(decisionTree_best, feature_names=imp_sorted, class_names=['Not Buying', 'Buying'], filled=True)
 plt.show()
+
+
+# fig = plt.figure(figsize=(5,5)) #Donut graph of size 5 x 5
+#
+#
+# #Create the pi chart
+# plt.pie(importances, startangle=90,autopct='%1.1f%%',pctdistance=0.85,  textprops={'fontsize': 16})
+#
+# #Add a centre circle which is blank (to make it donut)
+# centre_circle = plt.Circle((0, 0), 0.70, fc='white')
+#
+#
+# fig = plt.gcf()
+#
+# #add the circle
+# fig.gca().add_artist(centre_circle)
+# plt.text(0, 0, 'Survey Questions Importance', horizontalalignment='center', verticalalignment='center', fontsize=18)
+# plt.legend(features, loc="center left",bbox_to_anchor=[1, 0.5], fontsize=10) #position nicely
+# plt.show()
 
 
 
